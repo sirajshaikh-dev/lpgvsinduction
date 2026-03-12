@@ -4,7 +4,11 @@
       "Bash(cd C:/Users/ASUS/Desktop/lpgvsinduction && npm install tailwindcss @tailwindcss/vite class-variance-authority clsx tailwind-merge lucide-react @radix-ui/react-slider @radix-ui/react-separator 2>&1 | tail -5)",
       "Bash(cd C:/Users/ASUS/Desktop/lpgvsinduction && npm install tailwindcss @tailwindcss/vite class-variance-authority clsx tailwind-merge lucide-react @radix-ui/react-slider @radix-ui/react-separator 2>&1)",
       "Bash(cd C:/Users/ASUS/Desktop/lpgvsinduction && npm install tailwindcss @tailwindcss/vite class-variance-authority clsx tailwind-merge lucide-react @radix-ui/react-slider @radix-ui/react-separator --save 2>&1)",
-      "Bash(cd C:/Users/ASUS/Desktop/lpgvsinduction && npm run build 2>&1)"
+      "Bash(cd C:/Users/ASUS/Desktop/lpgvsinduction && npm run build 2>&1)",
+      "Bash(cd C:/Users/ASUS/Desktop/lpgvsinduction && npm install leaflet react-leaflet 2>&1 | tail -5)",
+      "WebFetch(domain:share.google)",
+      "WebFetch(domain:www.google.com)",
+      "WebFetch(domain:www.flipkart.com)"
     ]
   }
 }
