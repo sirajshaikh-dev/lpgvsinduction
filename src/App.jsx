@@ -81,11 +81,12 @@ const DEFAULTS = {
   ratePerUnit: 7,
 };
 
-function SliderRow({ label, value, min, max, step, onChange, unit, accentClass }) {
+function SliderRow({ label, value, min, max, step, onChange, unit, accentClass, lightText = false }) {
+  const mutedClass = lightText ? "text-white/60" : "text-muted-foreground";
   return (
     <div className="mb-5">
       <div className="flex justify-between items-center mb-2">
-        <span className="text-xs uppercase tracking-widest text-muted-foreground">{label}</span>
+        <span className={`text-xs uppercase tracking-widest ${mutedClass}`}>{label}</span>
         <span className={`font-mono text-sm font-semibold ${accentClass}`}>
           {typeof value === "number" && value % 1 !== 0 ? value.toFixed(1) : value}{unit}
         </span>
@@ -98,8 +99,8 @@ function SliderRow({ label, value, min, max, step, onChange, unit, accentClass }
         onValueChange={([v]) => onChange(v)}
       />
       <div className="flex justify-between mt-1">
-        <span className="text-[0.65rem] text-muted-foreground">{min}{unit}</span>
-        <span className="text-[0.65rem] text-muted-foreground">{max}{unit}</span>
+        <span className={`text-[0.65rem] ${mutedClass}`}>{min}{unit}</span>
+        <span className={`text-[0.65rem] ${mutedClass}`}>{max}{unit}</span>
       </div>
     </div>
   );
@@ -167,76 +168,84 @@ export default function App() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
           {/* LPG Card */}
-          <Card className="border-chart-2/30 bg-card">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-chart-2 text-sm uppercase tracking-widest">
+          <Card className="border-orange-400/50 bg-card relative overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none select-none">
+              <img src="/lpg.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center opacity-90" />
+              <div className="absolute inset-0 bg-black/60" />
+            </div>
+            <CardHeader className="pb-3 relative">
+              <CardTitle className="flex items-center gap-2 text-orange-300 text-sm uppercase tracking-widest font-bold">
                 <Flame className="w-4 h-4" />
                 LPG Gas
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="relative">
               <SliderRow
                 label="Cylinder Price" value={cylinderPrice}
                 min={800} max={2000} step={50}
                 onChange={setCylinderPrice} unit="₹"
-                accentClass="text-chart-2"
+                accentClass="text-orange-300" lightText
               />
               <SliderRow
                 label="Cylinder Lasts" value={cylinderDays}
                 min={10} max={40} step={1}
                 onChange={setCylinderDays} unit=" days"
-                accentClass="text-chart-2"
+                accentClass="text-orange-300" lightText
               />
-              <Separator className="my-3" />
+              <Separator className="my-3 bg-white/20" />
               <div className="space-y-1.5">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Per day</span>
-                  <span className="font-mono font-medium text-chart-2">₹{results.lpgPerDay.toFixed(0)}</span>
+                  <span className="text-white/65">Per day</span>
+                  <span className="font-mono font-semibold text-orange-300">₹{results.lpgPerDay.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Per month</span>
-                  <span className="font-mono font-semibold text-lg text-chart-2">₹{results.lpgPerMonth.toFixed(0)}</span>
+                  <span className="text-white/65">Per month</span>
+                  <span className="font-mono font-bold text-lg text-orange-300">₹{results.lpgPerMonth.toFixed(0)}</span>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           {/* Induction Card */}
-          <Card className="border-primary/30 bg-card">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-primary text-sm uppercase tracking-widest">
+          <Card className="border-blue-400/50 bg-card relative overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none select-none">
+              <img src="/induction.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center opacity-90" />
+              <div className="absolute inset-0 bg-black/60" />
+            </div>
+            <CardHeader className="pb-3 relative">
+              <CardTitle className="flex items-center gap-2 text-blue-300 text-sm uppercase tracking-widest font-bold">
                 <Zap className="w-4 h-4" />
                 Induction
               </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="relative">
               <SliderRow
                 label="Wattage" value={wattage}
                 min={1000} max={3000} step={100}
                 onChange={setWattage} unit="W"
-                accentClass="text-primary"
+                accentClass="text-blue-300" lightText
               />
               <SliderRow
                 label="Daily Usage" value={hoursPerDay}
                 min={0.5} max={5} step={0.5}
                 onChange={setHoursPerDay} unit=" hrs"
-                accentClass="text-primary"
+                accentClass="text-blue-300" lightText
               />
               <SliderRow
                 label="Electricity Rate" value={ratePerUnit}
                 min={3} max={20} step={0.5}
                 onChange={setRatePerUnit} unit=" ₹/unit"
-                accentClass="text-primary"
+                accentClass="text-blue-300" lightText
               />
-              <Separator className="my-3" />
+              <Separator className="my-3 bg-white/20" />
               <div className="space-y-1.5">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Units/month</span>
-                  <span className="font-mono font-medium text-primary">{results.unitsPerMonth.toFixed(1)} kWh</span>
+                  <span className="text-white/65">Units/month</span>
+                  <span className="font-mono font-semibold text-blue-300">{results.unitsPerMonth.toFixed(1)} kWh</span>
                 </div>
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Per month</span>
-                  <span className="font-mono font-semibold text-lg text-primary">₹{results.inductionPerMonth.toFixed(0)}</span>
+                  <span className="text-white/65">Per month</span>
+                  <span className="font-mono font-bold text-lg text-blue-300">₹{results.inductionPerMonth.toFixed(0)}</span>
                 </div>
               </div>
             </CardContent>
