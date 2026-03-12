@@ -8,7 +8,11 @@
       "Bash(cd C:/Users/ASUS/Desktop/lpgvsinduction && npm install leaflet react-leaflet 2>&1 | tail -5)",
       "WebFetch(domain:share.google)",
       "WebFetch(domain:www.google.com)",
-      "WebFetch(domain:www.flipkart.com)"
+      "WebFetch(domain:www.flipkart.com)",
+      "WebSearch",
+      "WebFetch(domain:www.ushacook.com)",
+      "WebFetch(domain:api.ushacook.com)",
+      "WebFetch(domain:media.tatacroma.com)"
     ]
   }
 }

@@ -16,6 +16,17 @@ const RR_IMAGES = [
   "/rr-signature-rr-2200-rr-signature-original-imahg3myyddvgfu2.webp",
 ];
 
+const USHA_IMAGES = [
+  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_0_lExfr9a05.png?updatedAt=1764768660479",
+  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_1_LUq9s-7F3.png?updatedAt=1772174661297",
+  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_2_2T1YPdMWS.png?updatedAt=1772174662540",
+  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_3_iNaLfO3Fi.png?updatedAt=1764768835343",
+  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_4_jwsAs7oZ9.png?updatedAt=1764768806125",
+  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_5_zqdSoUpNt6.png?updatedAt=1764768820784",
+  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_6_MLgXGJuVo.png?updatedAt=1764768787918",
+  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_7_Uwx3zUujd.png?updatedAt=1764768714391",
+];
+
 // ── Proper Vite fix: import images as assets so bundler resolves them correctly
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIconUrl from "leaflet/dist/images/marker-icon.png";
@@ -433,20 +444,7 @@ export default function App() {
           </CardHeader>
 
           <CardContent className="space-y-4">
-            {/* No local images — link to Flipkart gallery */}
-            <a
-              href="https://www.flipkart.com/usha-2200-w-infrared-cooktop-touch-panel/p/itm4e03ada5a3565"
-              target="_blank" rel="noopener noreferrer"
-              className="no-underline flex items-center justify-center gap-2 w-full aspect-[4/3] rounded-lg border border-dashed border-border bg-muted/40 hover:bg-muted transition-colors group"
-            >
-              <div className="text-center space-y-1.5">
-                <div className="text-3xl">🍳</div>
-                <p className="text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">View product images on Flipkart</p>
-                <p className="text-[0.6rem] text-muted-foreground/60 flex items-center justify-center gap-1">
-                  <ExternalLink className="w-3 h-3" /> flipkart.com
-                </p>
-              </div>
-            </a>
+            <ImageSlider images={USHA_IMAGES} className="border border-border" />
 
             {/* Price comparison */}
             <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
