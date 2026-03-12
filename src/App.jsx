@@ -3,12 +3,20 @@ import { useState, useMemo } from "react";
 const FLAME = "🔥";
 const BOLT = "⚡";
 
+const DEFAULTS = {
+  cylinderPrice: 1300,
+  cylinderDays: 20,
+  wattage: 2200,
+  hoursPerDay: 2,
+  ratePerUnit: 7,
+};
+
 const SliderRow = ({ label, value, min, max, step, onChange, unit, color }) => (
   <div style={{ marginBottom: "1.4rem" }}>
     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
       <span style={{ fontSize: "0.78rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "#9ca3af" }}>{label}</span>
       <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.95rem", color, fontWeight: 600 }}>
-        {typeof value === "number" && value % 1 !== 0 ? value.toFixed(1) : value} {unit}
+        {typeof value === "number" && value % 1 !== 0 ? value.toFixed(1) : value}{unit}
       </span>
     </div>
     <input
@@ -17,18 +25,29 @@ const SliderRow = ({ label, value, min, max, step, onChange, unit, color }) => (
       style={{ width: "100%", accentColor: color, cursor: "pointer", height: "4px" }}
     />
     <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.25rem" }}>
-      <span style={{ fontSize: "0.68rem", color: "#4b5563" }}>{min} {unit}</span>
-      <span style={{ fontSize: "0.68rem", color: "#4b5563" }}>{max} {unit}</span>
+      <span style={{ fontSize: "0.68rem", color: "#4b5563" }}>{min}{unit}</span>
+      <span style={{ fontSize: "0.68rem", color: "#4b5563" }}>{max}{unit}</span>
     </div>
   </div>
 );
 
 function App() {
-  const [cylinderPrice, setCylinderPrice] = useState(1200);
-  const [cylinderDays, setCylinderDays] = useState(19);
-  const [wattage, setWattage] = useState(2200);
-  const [hoursPerDay, setHoursPerDay] = useState(1.5);
-  const [ratePerUnit, setRatePerUnit] = useState(10);
+  const [cylinderPrice, setCylinderPrice] = useState(DEFAULTS.cylinderPrice);
+  const [cylinderDays, setCylinderDays] = useState(DEFAULTS.cylinderDays);
+  const [wattage, setWattage] = useState(DEFAULTS.wattage);
+  const [hoursPerDay, setHoursPerDay] = useState(DEFAULTS.hoursPerDay);
+  const [ratePerUnit, setRatePerUnit] = useState(DEFAULTS.ratePerUnit);
+
+  const isChanged = cylinderPrice !== DEFAULTS.cylinderPrice || cylinderDays !== DEFAULTS.cylinderDays ||
+    wattage !== DEFAULTS.wattage || hoursPerDay !== DEFAULTS.hoursPerDay || ratePerUnit !== DEFAULTS.ratePerUnit;
+
+  const handleReset = () => {
+    setCylinderPrice(DEFAULTS.cylinderPrice);
+    setCylinderDays(DEFAULTS.cylinderDays);
+    setWattage(DEFAULTS.wattage);
+    setHoursPerDay(DEFAULTS.hoursPerDay);
+    setRatePerUnit(DEFAULTS.ratePerUnit);
+  };
 
   const results = useMemo(() => {
     const lpgPerDay = cylinderPrice / cylinderDays;
@@ -52,6 +71,7 @@ function App() {
       minHeight: "100vh", background: "#0a0a0f",
       fontFamily: "'IBM Plex Sans', sans-serif",
       color: "#e5e7eb", padding: "2rem 1rem",
+      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
       backgroundImage: "radial-gradient(ellipse at 20% 10%, rgba(251,146,60,0.07) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.06) 0%, transparent 60%)"
     }}>
       <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -64,6 +84,20 @@ function App() {
             <span style={{ color: "#fb923c" }}>LPG</span> vs <span style={{ color: "#60a5fa" }}>Induction</span>
           </h1>
           <p style={{ color: "#6b7280", fontSize: "0.85rem", marginTop: "0.4rem" }}>Adjust values to match your usage and see which saves more</p>
+          {isChanged && (
+            <button onClick={handleReset} style={{
+              marginTop: "0.7rem", padding: "0.4rem 1rem", fontSize: "0.75rem",
+              letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600,
+              color: "#e5e7eb", background: "rgba(255,255,255,0.08)",
+              border: "1px solid rgba(255,255,255,0.15)", borderRadius: "0.5rem",
+              cursor: "pointer", transition: "all 0.2s ease",
+            }}
+              onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.14)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
+            >
+              ↺ Reset to defaults
+            </button>
+          )}
         </div>
 
         {/* Cards Grid */}
@@ -162,6 +196,11 @@ function App() {
         <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: "0.75rem", padding: "1rem 1.2rem", fontSize: "0.75rem", color: "#6b7280", lineHeight: 1.7 }}>
           <strong style={{ color: "#9ca3af" }}>💡 Note:</strong> Induction is ~84% energy efficient vs LPG's ~40%. So even at similar rupee cost, induction delivers more usable heat.
           At <strong style={{ color: "#e5e7eb" }}>2200W for 1.5 hrs/day @ ₹10/unit</strong> → <strong style={{ color: "#60a5fa" }}>₹{results.inductionPerMonth.toFixed(0)}/month</strong> vs LPG's <strong style={{ color: "#fb923c" }}>₹{results.lpgPerMonth.toFixed(0)}/month</strong>.
+        </div>
+
+        {/* Footer */}
+        <div style={{ textAlign: "center", marginTop: "2rem", fontSize: "0.85rem", color: "#6b7280" }}>
+          Made with <span style={{ color: "#ef4444" }}>❤️</span> by <span style={{ color: "#e5e7eb", fontWeight: 600 }}>Siraj</span>
         </div>
 
       </div>
