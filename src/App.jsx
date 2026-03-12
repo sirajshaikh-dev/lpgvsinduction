@@ -8,6 +8,13 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { ImageSlider } from "@/components/ui/image-slider";
+
+const RR_IMAGES = [
+  "/rr-signature-rr-2200-rr-signature-original-imahg3myf3ypfgp9.webp",
+  "/rr-signature-rr-2200-rr-signature-original-imahg3myevprjjzz.webp",
+  "/rr-signature-rr-2200-rr-signature-original-imahg3myyddvgfu2.webp",
+];
 
 // ── Proper Vite fix: import images as assets so bundler resolves them correctly
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
@@ -155,6 +162,28 @@ export default function App() {
             <span className="text-muted-foreground mx-2">vs</span>
             <span className="text-primary">Induction</span>
           </h1>
+          {/* ── Scroll CTA ── */}
+        <button
+          onClick={() => document.getElementById("exclusive-deal").scrollIntoView({ behavior: "smooth", block: "start" })}
+          className="w-full flex flex-col items-center gap-1 py-2 group cursor-pointer bg-transparent border-0 outline-none"
+          aria-label="Scroll to exclusive deals"
+        >
+          <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground group-hover:text-primary transition-colors duration-300">
+            Exclusive Deals Below
+          </span>
+          <div className="flex flex-col items-center" style={{ animation: "scrollBounce 1.6s ease-in-out infinite" }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+              className="text-primary opacity-90">
+              <path d="M12 5v14M5 12l7 7 7-7"/>
+            </svg>
+          </div>
+          <div className="flex flex-col items-center -mt-2 opacity-50" style={{ animation: "scrollBounce 1.6s ease-in-out infinite 0.2s" }}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+              className="text-primary">
+              <path d="M5 9l7 7 7-7"/>
+            </svg>
+          </div>
+        </button>
           <p className="text-sm text-muted-foreground">Adjust values to match your usage and see which saves more</p>
           {isChanged && (
             <Button variant="outline" size="sm" onClick={handleReset} className="mt-2 gap-1.5">
@@ -310,7 +339,7 @@ export default function App() {
         </Card>
 
         {/* ── Product Sell Section ── */}
-        <Card className="border-primary/30 overflow-hidden">
+        <Card id="exclusive-deal" className="border-primary/30 overflow-hidden">
           {/* Badge strip */}
           <div className="bg-primary/10 border-b border-primary/20 px-5 py-2 flex items-center gap-2">
             <Badge variant="accent" className="text-[0.6rem] tracking-widest uppercase">✦ Exclusive Deal</Badge>
@@ -326,6 +355,8 @@ export default function App() {
           </CardHeader>
 
           <CardContent className="space-y-4">
+            <ImageSlider images={RR_IMAGES} className="border border-border" />
+
             {/* Price comparison */}
             <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
               <p className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">Price Comparison</p>
@@ -402,6 +433,21 @@ export default function App() {
           </CardHeader>
 
           <CardContent className="space-y-4">
+            {/* No local images — link to Flipkart gallery */}
+            <a
+              href="https://www.flipkart.com/usha-2200-w-infrared-cooktop-touch-panel/p/itm4e03ada5a3565"
+              target="_blank" rel="noopener noreferrer"
+              className="no-underline flex items-center justify-center gap-2 w-full aspect-[4/3] rounded-lg border border-dashed border-border bg-muted/40 hover:bg-muted transition-colors group"
+            >
+              <div className="text-center space-y-1.5">
+                <div className="text-3xl">🍳</div>
+                <p className="text-xs font-medium text-muted-foreground group-hover:text-primary transition-colors">View product images on Flipkart</p>
+                <p className="text-[0.6rem] text-muted-foreground/60 flex items-center justify-center gap-1">
+                  <ExternalLink className="w-3 h-3" /> flipkart.com
+                </p>
+              </div>
+            </a>
+
             {/* Price comparison */}
             <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
               <p className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">Price Comparison</p>
