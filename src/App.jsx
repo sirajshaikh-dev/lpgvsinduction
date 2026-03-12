@@ -1,8 +1,11 @@
 import { useState, useMemo } from "react";
 import { Analytics } from "@vercel/analytics/react";
-
-const FLAME = "🔥";
-const BOLT = "⚡";
+import { Flame, Zap, RotateCcw, MapPin, ExternalLink, Truck, Package } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
 
 const DEFAULTS = {
   cylinderPrice: 1300,
@@ -12,35 +15,43 @@ const DEFAULTS = {
   ratePerUnit: 7,
 };
 
-const SliderRow = ({ label, value, min, max, step, onChange, unit, color }) => (
-  <div style={{ marginBottom: "1.4rem" }}>
-    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
-      <span style={{ fontSize: "0.78rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "#9ca3af" }}>{label}</span>
-      <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.95rem", color, fontWeight: 600 }}>
-        {typeof value === "number" && value % 1 !== 0 ? value.toFixed(1) : value}{unit}
-      </span>
+function SliderRow({ label, value, min, max, step, onChange, unit, accentClass }) {
+  return (
+    <div className="mb-5">
+      <div className="flex justify-between items-center mb-2">
+        <span className="text-xs uppercase tracking-widest text-muted-foreground">{label}</span>
+        <span className={`font-mono text-sm font-semibold ${accentClass}`}>
+          {typeof value === "number" && value % 1 !== 0 ? value.toFixed(1) : value}{unit}
+        </span>
+      </div>
+      <Slider
+        min={min}
+        max={max}
+        step={step}
+        value={[value]}
+        onValueChange={([v]) => onChange(v)}
+      />
+      <div className="flex justify-between mt-1">
+        <span className="text-[0.65rem] text-muted-foreground">{min}{unit}</span>
+        <span className="text-[0.65rem] text-muted-foreground">{max}{unit}</span>
+      </div>
     </div>
-    <input
-      type="range" min={min} max={max} step={step} value={value}
-      onChange={e => onChange(parseFloat(e.target.value))}
-      style={{ width: "100%", accentColor: color, cursor: "pointer", height: "4px" }}
-    />
-    <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.25rem" }}>
-      <span style={{ fontSize: "0.68rem", color: "#4b5563" }}>{min}{unit}</span>
-      <span style={{ fontSize: "0.68rem", color: "#4b5563" }}>{max}{unit}</span>
-    </div>
-  </div>
-);
+  );
+}
 
-function App() {
+export default function App() {
   const [cylinderPrice, setCylinderPrice] = useState(DEFAULTS.cylinderPrice);
   const [cylinderDays, setCylinderDays] = useState(DEFAULTS.cylinderDays);
   const [wattage, setWattage] = useState(DEFAULTS.wattage);
   const [hoursPerDay, setHoursPerDay] = useState(DEFAULTS.hoursPerDay);
   const [ratePerUnit, setRatePerUnit] = useState(DEFAULTS.ratePerUnit);
 
-  const isChanged = cylinderPrice !== DEFAULTS.cylinderPrice || cylinderDays !== DEFAULTS.cylinderDays ||
-    wattage !== DEFAULTS.wattage || hoursPerDay !== DEFAULTS.hoursPerDay || ratePerUnit !== DEFAULTS.ratePerUnit;
+  const isChanged =
+    cylinderPrice !== DEFAULTS.cylinderPrice ||
+    cylinderDays !== DEFAULTS.cylinderDays ||
+    wattage !== DEFAULTS.wattage ||
+    hoursPerDay !== DEFAULTS.hoursPerDay ||
+    ratePerUnit !== DEFAULTS.ratePerUnit;
 
   const handleReset = () => {
     setCylinderPrice(DEFAULTS.cylinderPrice);
@@ -53,277 +64,252 @@ function App() {
   const results = useMemo(() => {
     const lpgPerDay = cylinderPrice / cylinderDays;
     const lpgPerMonth = lpgPerDay * 30;
-
     const unitsPerDay = (wattage / 1000) * hoursPerDay;
     const inductionPerDay = unitsPerDay * ratePerUnit;
     const inductionPerMonth = inductionPerDay * 30;
-
     const unitsPerMonth = unitsPerDay * 30;
     const saving = lpgPerMonth - inductionPerMonth;
     const cheaperOption = saving > 0 ? "induction" : saving < 0 ? "lpg" : "equal";
-
     return { lpgPerDay, lpgPerMonth, inductionPerDay, inductionPerMonth, unitsPerDay, unitsPerMonth, saving, cheaperOption };
   }, [cylinderPrice, cylinderDays, wattage, hoursPerDay, ratePerUnit]);
 
   const pct = Math.min(100, Math.abs(results.saving) / Math.max(results.lpgPerMonth, results.inductionPerMonth) * 100);
+  const winner = results.cheaperOption;
 
   return (
-    <div style={{
-      minHeight: "100vh", background: "#0a0a0f",
-      fontFamily: "'IBM Plex Sans', sans-serif",
-      color: "#e5e7eb", padding: "2rem 1rem",
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      backgroundImage: "radial-gradient(ellipse at 20% 10%, rgba(251,146,60,0.07) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(59,130,246,0.06) 0%, transparent 60%)"
-    }}>
-      <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
-      <div style={{ maxWidth: 760, margin: "0 auto" }}>
+    <div className="min-h-screen bg-background text-foreground px-4 py-10">
+      <div className="max-w-2xl mx-auto space-y-4">
 
         {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
-          <div style={{ fontSize: "0.7rem", letterSpacing: "0.25em", textTransform: "uppercase", color: "#6b7280", marginBottom: "0.5rem" }}>India Kitchen Cost Planner</div>
-          <h1 style={{ fontSize: "clamp(1.6rem, 4vw, 2.2rem)", fontWeight: 600, margin: 0, letterSpacing: "-0.02em" }}>
-            <span style={{ color: "#fb923c" }}>LPG</span> vs <span style={{ color: "#60a5fa" }}>Induction</span>
+        <div className="text-center mb-8 space-y-2">
+          <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">India Kitchen Cost Planner</p>
+          <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
+            <span className="text-chart-2">LPG</span>
+            <span className="text-muted-foreground mx-2">vs</span>
+            <span className="text-primary">Induction</span>
           </h1>
-          <p style={{ color: "#6b7280", fontSize: "0.85rem", marginTop: "0.4rem" }}>Adjust values to match your usage and see which saves more</p>
+          <p className="text-sm text-muted-foreground">Adjust values to match your usage and see which saves more</p>
           {isChanged && (
-            <button onClick={handleReset} style={{
-              marginTop: "0.7rem", padding: "0.4rem 1rem", fontSize: "0.75rem",
-              letterSpacing: "0.08em", textTransform: "uppercase", fontWeight: 600,
-              color: "#e5e7eb", background: "rgba(255,255,255,0.08)",
-              border: "1px solid rgba(255,255,255,0.15)", borderRadius: "0.5rem",
-              cursor: "pointer", transition: "all 0.2s ease",
-            }}
-              onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.14)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; }}
-            >
-              ↺ Reset to defaults
-            </button>
+            <Button variant="outline" size="sm" onClick={handleReset} className="mt-2 gap-1.5">
+              <RotateCcw className="w-3.5 h-3.5" />
+              Reset to defaults
+            </Button>
           )}
         </div>
 
-        {/* Cards Grid */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem" }}>
+        {/* LPG + Induction Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
           {/* LPG Card */}
-          <div style={{ background: "rgba(251,146,60,0.06)", border: "1px solid rgba(251,146,60,0.2)", borderRadius: "1rem", padding: "1.4rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.2rem" }}>
-              <span style={{ fontSize: "1.2rem" }}>{FLAME}</span>
-              <span style={{ fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#fb923c", fontWeight: 600 }}>LPG Gas</span>
-            </div>
-            <SliderRow label="Cylinder Price" value={cylinderPrice} min={800} max={2000} step={50} onChange={setCylinderPrice} unit="₹" color="#fb923c" />
-            <SliderRow label="Cylinder Lasts" value={cylinderDays} min={10} max={40} step={1} onChange={setCylinderDays} unit="days" color="#fb923c" />
-            <div style={{ borderTop: "1px solid rgba(251,146,60,0.15)", paddingTop: "1rem", marginTop: "0.5rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
-                <span style={{ fontSize: "0.78rem", color: "#9ca3af" }}>Per day</span>
-                <span style={{ fontFamily: "'DM Mono', monospace", color: "#fb923c" }}>₹{results.lpgPerDay.toFixed(0)}</span>
+          <Card className="border-chart-2/30 bg-card">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-chart-2 text-sm uppercase tracking-widest">
+                <Flame className="w-4 h-4" />
+                LPG Gas
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SliderRow
+                label="Cylinder Price" value={cylinderPrice}
+                min={800} max={2000} step={50}
+                onChange={setCylinderPrice} unit="₹"
+                accentClass="text-chart-2"
+              />
+              <SliderRow
+                label="Cylinder Lasts" value={cylinderDays}
+                min={10} max={40} step={1}
+                onChange={setCylinderDays} unit=" days"
+                accentClass="text-chart-2"
+              />
+              <Separator className="my-3" />
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Per day</span>
+                  <span className="font-mono font-medium text-chart-2">₹{results.lpgPerDay.toFixed(0)}</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Per month</span>
+                  <span className="font-mono font-semibold text-lg text-chart-2">₹{results.lpgPerMonth.toFixed(0)}</span>
+                </div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: "0.78rem", color: "#9ca3af" }}>Per month</span>
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "1.1rem", fontWeight: 600, color: "#fb923c" }}>₹{results.lpgPerMonth.toFixed(0)}</span>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           {/* Induction Card */}
-          <div style={{ background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: "1rem", padding: "1.4rem" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1.2rem" }}>
-              <span style={{ fontSize: "1.2rem" }}>{BOLT}</span>
-              <span style={{ fontSize: "0.75rem", letterSpacing: "0.12em", textTransform: "uppercase", color: "#60a5fa", fontWeight: 600 }}>Induction</span>
-            </div>
-            <SliderRow label="Wattage" value={wattage} min={1000} max={3000} step={100} onChange={setWattage} unit="W" color="#60a5fa" />
-            <SliderRow label="Daily Usage" value={hoursPerDay} min={0.5} max={5} step={0.5} onChange={setHoursPerDay} unit="hrs" color="#60a5fa" />
-            <SliderRow label="Electricity Rate" value={ratePerUnit} min={3} max={20} step={0.5} onChange={setRatePerUnit} unit="₹/unit" color="#60a5fa" />
-            <div style={{ borderTop: "1px solid rgba(96,165,250,0.15)", paddingTop: "1rem", marginTop: "0.5rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.4rem" }}>
-                <span style={{ fontSize: "0.78rem", color: "#9ca3af" }}>Units/month</span>
-                <span style={{ fontFamily: "'DM Mono', monospace", color: "#60a5fa" }}>{results.unitsPerMonth.toFixed(1)} kWh</span>
+          <Card className="border-primary/30 bg-card">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-primary text-sm uppercase tracking-widest">
+                <Zap className="w-4 h-4" />
+                Induction
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SliderRow
+                label="Wattage" value={wattage}
+                min={1000} max={3000} step={100}
+                onChange={setWattage} unit="W"
+                accentClass="text-primary"
+              />
+              <SliderRow
+                label="Daily Usage" value={hoursPerDay}
+                min={0.5} max={5} step={0.5}
+                onChange={setHoursPerDay} unit=" hrs"
+                accentClass="text-primary"
+              />
+              <SliderRow
+                label="Electricity Rate" value={ratePerUnit}
+                min={3} max={20} step={0.5}
+                onChange={setRatePerUnit} unit=" ₹/unit"
+                accentClass="text-primary"
+              />
+              <Separator className="my-3" />
+              <div className="space-y-1.5">
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Units/month</span>
+                  <span className="font-mono font-medium text-primary">{results.unitsPerMonth.toFixed(1)} kWh</span>
+                </div>
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">Per month</span>
+                  <span className="font-mono font-semibold text-lg text-primary">₹{results.inductionPerMonth.toFixed(0)}</span>
+                </div>
               </div>
-              <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <span style={{ fontSize: "0.78rem", color: "#9ca3af" }}>Per month</span>
-                <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "1.1rem", fontWeight: 600, color: "#60a5fa" }}>₹{results.inductionPerMonth.toFixed(0)}</span>
-              </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Verdict Banner */}
-        <div style={{
-          background: results.cheaperOption === "induction"
-            ? "rgba(96,165,250,0.08)" : results.cheaperOption === "lpg"
-            ? "rgba(251,146,60,0.08)" : "rgba(255,255,255,0.04)",
-          border: `1px solid ${results.cheaperOption === "induction" ? "rgba(96,165,250,0.3)" : results.cheaperOption === "lpg" ? "rgba(251,146,60,0.3)" : "rgba(255,255,255,0.1)"}`,
-          borderRadius: "1rem", padding: "1.4rem 1.6rem", marginBottom: "1rem"
-        }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
-            <div>
-              <div style={{ fontSize: "0.7rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b7280", marginBottom: "0.35rem" }}>Monthly Saving</div>
-              <div style={{ fontSize: "2rem", fontFamily: "'DM Mono', monospace", fontWeight: 600,
-                color: results.cheaperOption === "induction" ? "#60a5fa" : results.cheaperOption === "lpg" ? "#fb923c" : "#9ca3af" }}>
-                ₹{Math.abs(results.saving).toFixed(0)}
+        <Card className={winner === "induction" ? "border-primary/40" : winner === "lpg" ? "border-chart-2/40" : "border-border"}>
+          <CardContent className="pt-5">
+            <div className="flex items-center justify-between flex-wrap gap-4">
+              <div>
+                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Monthly Saving</p>
+                <p className={`font-mono text-4xl font-bold tracking-tight ${winner === "induction" ? "text-primary" : winner === "lpg" ? "text-chart-2" : "text-muted-foreground"}`}>
+                  ₹{Math.abs(results.saving).toFixed(0)}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Verdict</p>
+                <p className="font-semibold text-base">
+                  {winner === "equal"
+                    ? "Both cost the same"
+                    : winner === "induction"
+                    ? <span className="flex items-center gap-1.5 justify-end"><Zap className="w-4 h-4 text-primary" /><span className="text-primary">Induction</span> is cheaper</span>
+                    : <span className="flex items-center gap-1.5 justify-end"><Flame className="w-4 h-4 text-chart-2" /><span className="text-chart-2">LPG</span> is cheaper</span>
+                  }
+                </p>
+                {winner !== "equal" && (
+                  <p className="text-xs text-muted-foreground">saves {pct.toFixed(0)}% per month</p>
+                )}
               </div>
             </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontSize: "0.7rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b7280", marginBottom: "0.35rem" }}>Verdict</div>
-              <div style={{ fontSize: "1rem", fontWeight: 600 }}>
-                {results.cheaperOption === "equal" ? "Both cost the same" :
-                  `${results.cheaperOption === "induction" ? `${BOLT} Induction` : `${FLAME} LPG`} is cheaper`}
-              </div>
-              {results.cheaperOption !== "equal" && (
-                <div style={{ fontSize: "0.78rem", color: "#9ca3af" }}>saves {pct.toFixed(0)}% per month</div>
-              )}
-            </div>
-          </div>
 
-          {/* Bar comparison */}
-          <div style={{ marginTop: "1.2rem" }}>
-            <div style={{ display: "flex", gap: "4px", height: "8px", borderRadius: "4px", overflow: "hidden" }}>
-              <div style={{
-                flex: results.lpgPerMonth, background: "#fb923c",
-                transition: "flex 0.4s ease", borderRadius: "4px 0 0 4px"
-              }} />
-              <div style={{
-                flex: results.inductionPerMonth, background: "#60a5fa",
-                transition: "flex 0.4s ease", borderRadius: "0 4px 4px 0"
-              }} />
+            {/* Bar comparison */}
+            <div className="mt-4">
+              <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
+                <div
+                  className="bg-chart-2 rounded-l-full transition-all duration-500"
+                  style={{ flex: results.lpgPerMonth }}
+                />
+                <div
+                  className="bg-primary rounded-r-full transition-all duration-500"
+                  style={{ flex: results.inductionPerMonth }}
+                />
+              </div>
+              <div className="flex justify-between mt-1.5">
+                <span className="text-[0.68rem] text-chart-2 flex items-center gap-1"><Flame className="w-3 h-3" /> LPG ₹{results.lpgPerMonth.toFixed(0)}</span>
+                <span className="text-[0.68rem] text-primary flex items-center gap-1">Induction ₹{results.inductionPerMonth.toFixed(0)} <Zap className="w-3 h-3" /></span>
+              </div>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: "0.4rem" }}>
-              <span style={{ fontSize: "0.7rem", color: "#fb923c" }}>{FLAME} LPG ₹{results.lpgPerMonth.toFixed(0)}</span>
-              <span style={{ fontSize: "0.7rem", color: "#60a5fa" }}>Induction ₹{results.inductionPerMonth.toFixed(0)} {BOLT}</span>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Note */}
-        <div style={{ background: "rgba(255,255,255,0.03)", borderRadius: "0.75rem", padding: "1rem 1.2rem", fontSize: "0.75rem", color: "#6b7280", lineHeight: 1.7 }}>
-          <strong style={{ color: "#9ca3af" }}>💡 Note:</strong> Induction is ~84% energy efficient vs LPG's ~40%. So even at similar rupee cost, induction delivers more usable heat.
-          At <strong style={{ color: "#e5e7eb" }}>2200W for 1.5 hrs/day @ ₹10/unit</strong> → <strong style={{ color: "#60a5fa" }}>₹{results.inductionPerMonth.toFixed(0)}/month</strong> vs LPG's <strong style={{ color: "#fb923c" }}>₹{results.lpgPerMonth.toFixed(0)}/month</strong>.
-        </div>
+        <Card className="border-border bg-muted/40">
+          <CardContent className="pt-5 text-sm text-muted-foreground leading-relaxed">
+            <span className="font-semibold text-foreground">💡 Note:</span> Induction is ~84% energy efficient vs LPG's ~40%.
+            So even at similar rupee cost, induction delivers more usable heat.
+            At <span className="font-semibold text-foreground">2200W for 1.5 hrs/day @ ₹10/unit</span> →{" "}
+            <span className="font-semibold text-primary">₹{results.inductionPerMonth.toFixed(0)}/month</span> vs LPG's{" "}
+            <span className="font-semibold text-chart-2">₹{results.lpgPerMonth.toFixed(0)}/month</span>.
+          </CardContent>
+        </Card>
 
-        {/* Product Sell Section */}
-        <div style={{
-          marginTop: "2rem",
-          background: "rgba(74,222,128,0.04)",
-          border: "1px solid rgba(74,222,128,0.2)",
-          borderRadius: "1rem",
-          overflow: "hidden",
-        }}>
+        {/* ── Product Sell Section ── */}
+        <Card className="border-primary/30 overflow-hidden">
           {/* Badge strip */}
-          <div style={{
-            background: "rgba(74,222,128,0.12)",
-            borderBottom: "1px solid rgba(74,222,128,0.15)",
-            padding: "0.5rem 1.4rem",
-            display: "flex", alignItems: "center", gap: "0.5rem",
-          }}>
-            <span style={{ fontSize: "0.65rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#4ade80", fontWeight: 700 }}>
-              ✦ Exclusive Deal — Direct from Seller
-            </span>
+          <div className="bg-primary/10 border-b border-primary/20 px-5 py-2 flex items-center gap-2">
+            <Badge variant="accent" className="text-[0.6rem] tracking-widest uppercase">✦ Exclusive Deal</Badge>
+            <span className="text-[0.65rem] text-muted-foreground">Direct from seller</span>
           </div>
 
-          <div style={{ padding: "1.4rem" }}>
-            {/* Product Title */}
-            <div style={{ marginBottom: "1.2rem" }}>
-              <div style={{ fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b7280", marginBottom: "0.3rem" }}>
-                Featured Product
-              </div>
-              <h2 style={{
-                margin: 0, fontSize: "clamp(1rem, 2.5vw, 1.25rem)",
-                fontWeight: 600, letterSpacing: "-0.01em", color: "#e5e7eb", lineHeight: 1.35,
-              }}>
-                RR Signature 2200W Infrared Cooktop
-                <span style={{ fontWeight: 400, color: "#6b7280", fontSize: "0.85em" }}> — Touch Panel</span>
-              </h2>
-            </div>
+          <CardHeader className="pb-2">
+            <CardDescription className="text-xs uppercase tracking-widest">Featured Product</CardDescription>
+            <CardTitle className="text-lg leading-snug">
+              RR Signature 2200W Infrared Cooktop
+              <span className="font-normal text-muted-foreground text-sm"> — Touch Panel</span>
+            </CardTitle>
+          </CardHeader>
 
-            {/* Price Comparison */}
-            <div style={{
-              background: "rgba(0,0,0,0.3)",
-              border: "1px solid rgba(255,255,255,0.06)",
-              borderRadius: "0.75rem",
-              padding: "1rem 1.2rem",
-              marginBottom: "1.2rem",
-            }}>
-              <div style={{ fontSize: "0.68rem", letterSpacing: "0.15em", textTransform: "uppercase", color: "#6b7280", marginBottom: "0.8rem" }}>
-                Price Comparison
+          <CardContent className="space-y-4">
+            {/* Price comparison */}
+            <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+              <p className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">Price Comparison</p>
+
+              {/* Flipkart row */}
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://www.flipkart.com/rr-signature-2200-w-infrared-cooktop-touch-panel/p/itm1ab6b8d449f31"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="no-underline"
+                  >
+                    <Badge
+                      variant="secondary"
+                      className="text-[0.6rem] uppercase tracking-wider cursor-pointer hover:opacity-80 transition-opacity gap-1"
+                    >
+                      Flipkart <ExternalLink className="w-2.5 h-2.5" />
+                    </Badge>
+                  </a>
+                  <span className="text-sm text-muted-foreground">MRP</span>
+                </div>
+                <span className="font-mono text-muted-foreground line-through decoration-destructive">₹4,000</span>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.55rem" }}>
-                {/* Flipkart price */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "0.8rem", color: "#9ca3af", display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                    <a
-                      href="https://www.flipkart.com/rr-signature-2200-w-infrared-cooktop-touch-panel/p/itm1ab6b8d449f31"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title="Verify price on Flipkart"
-                      style={{
-                        fontSize: "0.6rem", padding: "0.1rem 0.4rem",
-                        background: "rgba(255,167,38,0.15)", border: "1px solid rgba(255,167,38,0.25)",
-                        borderRadius: "0.25rem", color: "#ffa726", letterSpacing: "0.08em", textTransform: "uppercase",
-                        textDecoration: "none", cursor: "pointer", transition: "all 0.15s ease",
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.background = "rgba(255,167,38,0.3)";
-                        e.currentTarget.style.borderColor = "rgba(255,167,38,0.6)";
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.background = "rgba(255,167,38,0.15)";
-                        e.currentTarget.style.borderColor = "rgba(255,167,38,0.25)";
-                      }}
-                    >Flipkart ↗</a>
-                    MRP
-                  </span>
-                  <span style={{
-                    fontFamily: "'DM Mono', monospace", fontSize: "1rem", color: "#4b5563",
-                    textDecoration: "line-through", textDecorationColor: "#ef4444",
-                  }}>₹4,000</span>
+
+              <Separator />
+
+              {/* Our price row */}
+              <div className="flex justify-between items-center">
+                <div className="flex items-center gap-2">
+                  <Badge variant="default" className="text-[0.6rem] uppercase tracking-wider">Our Price</Badge>
+                  <span className="text-sm text-muted-foreground">You Pay</span>
                 </div>
-                {/* Divider */}
-                <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }} />
-                {/* Our price */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span style={{ fontSize: "0.8rem", color: "#9ca3af", display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                    <span style={{
-                      fontSize: "0.6rem", padding: "0.1rem 0.4rem",
-                      background: "rgba(74,222,128,0.12)", border: "1px solid rgba(74,222,128,0.25)",
-                      borderRadius: "0.25rem", color: "#4ade80", letterSpacing: "0.08em", textTransform: "uppercase",
-                    }}>Our Price</span>
-                    You Pay
-                  </span>
-                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "1.4rem", fontWeight: 700, color: "#4ade80" }}>₹2,800</span>
-                </div>
-                {/* Savings row */}
-                <div style={{
-                  background: "rgba(74,222,128,0.07)", borderRadius: "0.5rem",
-                  padding: "0.45rem 0.8rem",
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                }}>
-                  <span style={{ fontSize: "0.75rem", color: "#4ade80", fontWeight: 600 }}>You Save</span>
-                  <span style={{ fontFamily: "'DM Mono', monospace", fontSize: "0.9rem", color: "#4ade80", fontWeight: 600 }}>
-                    ₹1,200 &nbsp;<span style={{ fontSize: "0.75rem", opacity: 0.8 }}>(30% off)</span>
-                  </span>
-                </div>
+                <span className="font-mono text-2xl font-bold text-primary">₹2,800</span>
+              </div>
+
+              {/* Savings callout */}
+              <div className="bg-primary/10 rounded-md px-3 py-2 flex justify-between items-center">
+                <span className="text-sm font-semibold text-primary">You Save</span>
+                <span className="font-mono text-sm font-bold text-primary">₹1,200 <span className="font-normal opacity-75">(30% off)</span></span>
               </div>
             </div>
 
-            {/* Delivery Info */}
-            <div style={{
-              display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.6rem", marginBottom: "1.2rem",
-            }}>
-              <div style={{
-                background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.15)",
-                borderRadius: "0.75rem", padding: "0.8rem 1rem",
-              }}>
-                <div style={{ fontSize: "1rem", marginBottom: "0.2rem" }}>🚚</div>
-                <div style={{ fontSize: "0.72rem", color: "#4ade80", fontWeight: 700, letterSpacing: "0.05em" }}>FREE Delivery</div>
-                <div style={{ fontSize: "0.7rem", color: "#9ca3af", marginTop: "0.1rem" }}>Within Surat</div>
-              </div>
-              <div style={{
-                background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.15)",
-                borderRadius: "0.75rem", padding: "0.8rem 1rem",
-              }}>
-                <div style={{ fontSize: "1rem", marginBottom: "0.2rem" }}>🇮🇳</div>
-                <div style={{ fontSize: "0.72rem", color: "#60a5fa", fontWeight: 700, letterSpacing: "0.05em" }}>₹100 Delivery</div>
-                <div style={{ fontSize: "0.7rem", color: "#9ca3af", marginTop: "0.1rem" }}>Pan India</div>
-              </div>
+            {/* Delivery */}
+            <div className="grid grid-cols-2 gap-3">
+              <Card className="border-primary/20 bg-primary/5">
+                <CardContent className="pt-4 pb-3 px-4">
+                  <Truck className="w-5 h-5 text-primary mb-1.5" />
+                  <p className="text-xs font-bold text-primary uppercase tracking-wide">Free Delivery</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Within Surat</p>
+                </CardContent>
+              </Card>
+              <Card className="border-chart-3/20 bg-chart-3/5">
+                <CardContent className="pt-4 pb-3 px-4">
+                  <Package className="w-5 h-5 text-chart-3 mb-1.5" />
+                  <p className="text-xs font-bold text-chart-3 uppercase tracking-wide">₹100 Delivery</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Pan India</p>
+                </CardContent>
+              </Card>
             </div>
 
             {/* WhatsApp CTA */}
@@ -331,139 +317,82 @@ function App() {
               href={`https://wa.me/919898194074?text=${encodeURIComponent("Hi, I want to order the RR Signature 2200W Induction Cooktop")}`}
               target="_blank"
               rel="noopener noreferrer"
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "center", gap: "0.6rem",
-                width: "100%", padding: "0.85rem 1.5rem",
-                background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
-                border: "none", borderRadius: "0.75rem",
-                color: "#fff", fontSize: "0.95rem", fontWeight: 700,
-                textDecoration: "none", letterSpacing: "0.02em",
-                boxShadow: "0 0 24px rgba(34,197,94,0.25)",
-                transition: "all 0.2s ease",
-                cursor: "pointer",
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.boxShadow = "0 0 36px rgba(34,197,94,0.45)";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.boxShadow = "0 0 24px rgba(34,197,94,0.25)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }}
+              className="no-underline block"
             >
-              {/* WhatsApp SVG */}
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-              </svg>
-              Order on WhatsApp
+              <Button className="w-full h-11 text-base gap-2.5 bg-[#22c55e] hover:bg-[#16a34a] text-white border-0 shadow-lg shadow-green-500/20">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+                Order on WhatsApp
+              </Button>
             </a>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
-        {/* Store Section */}
-        <div style={{
-          marginTop: "1rem",
-          background: "rgba(255,255,255,0.02)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: "1rem",
-          overflow: "hidden",
-        }}>
-          {/* Header */}
-          <div style={{
-            padding: "1rem 1.4rem",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
-            display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.5rem",
-          }}>
-            <div style={{ fontSize: "0.68rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#6b7280" }}>
-              How to Order
-            </div>
-            <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
-              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#4ade80", display: "inline-block" }} />
-              <span style={{ fontSize: "0.7rem", color: "#4ade80" }}>WhatsApp</span>
-              <span style={{ fontSize: "0.7rem", color: "#4b5563", margin: "0 0.2rem" }}>or</span>
-              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#60a5fa", display: "inline-block" }} />
-              <span style={{ fontSize: "0.7rem", color: "#60a5fa" }}>Visit Store</span>
+        {/* ── Store Section ── */}
+        <Card className="border-border overflow-hidden">
+          <div className="px-5 py-3 border-b border-border flex items-center justify-between flex-wrap gap-2">
+            <p className="text-xs uppercase tracking-widest text-muted-foreground">How to Order</p>
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1.5 text-xs text-[#22c55e]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e]" /> WhatsApp
+              </span>
+              <span className="text-xs text-muted-foreground">or</span>
+              <span className="flex items-center gap-1.5 text-xs text-primary">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" /> Visit Store
+              </span>
             </div>
           </div>
 
-          <div style={{ padding: "1.2rem 1.4rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
-            {/* Store Info */}
-            <div style={{ display: "flex", alignItems: "flex-start", gap: "0.75rem" }}>
-              <div style={{
-                width: "36px", height: "36px", flexShrink: 0, borderRadius: "0.5rem",
-                background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.2)",
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem",
-              }}>🏪</div>
+          <CardContent className="pt-5 space-y-4">
+            {/* Store info */}
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-lg flex-shrink-0">
+                🏪
+              </div>
               <div>
-                <div style={{ fontSize: "0.95rem", fontWeight: 600, color: "#e5e7eb", letterSpacing: "-0.01em" }}>
-                  MS Electrical
-                </div>
-                <div style={{ fontSize: "0.75rem", color: "#6b7280", marginTop: "0.15rem" }}>
-                  Visit us in-store to see the product before buying
-                </div>
+                <p className="font-semibold text-foreground text-base">MS Electrical- Bhestan, Surat</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Visit us in-store to see the product before buying</p>
               </div>
             </div>
 
             {/* Map iframe */}
-            <div style={{
-              borderRadius: "0.75rem", overflow: "hidden",
-              border: "1px solid rgba(255,255,255,0.08)",
-              position: "relative", height: "200px",
-            }}>
+            <div className="rounded-lg overflow-hidden border border-border h-48">
               <iframe
                 title="MS Electrical Store Location"
                 src="https://maps.google.com/maps?q=MS+Electrical+Surat&output=embed&z=15"
                 width="100%"
                 height="100%"
-                style={{ border: 0, display: "block", filter: "invert(90%) hue-rotate(180deg) brightness(0.85)" }}
+                className="block"
+                style={{ filter: "contrast(1.05) saturate(0.9)" }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
 
-            {/* Directions Button */}
+            {/* Directions button */}
             <a
               href="https://share.google/jBIWkKOmJXZ3pCPdB"
               target="_blank"
               rel="noopener noreferrer"
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "center", gap: "0.55rem",
-                width: "100%", padding: "0.75rem 1.2rem",
-                background: "rgba(96,165,250,0.1)",
-                border: "1px solid rgba(96,165,250,0.3)",
-                borderRadius: "0.75rem",
-                color: "#60a5fa", fontSize: "0.88rem", fontWeight: 600,
-                textDecoration: "none", letterSpacing: "0.02em",
-                transition: "all 0.2s ease", cursor: "pointer",
-              }}
-              onMouseEnter={e => {
-                e.currentTarget.style.background = "rgba(96,165,250,0.18)";
-                e.currentTarget.style.borderColor = "rgba(96,165,250,0.5)";
-              }}
-              onMouseLeave={e => {
-                e.currentTarget.style.background = "rgba(96,165,250,0.1)";
-                e.currentTarget.style.borderColor = "rgba(96,165,250,0.3)";
-              }}
+              className="no-underline block"
             >
-              {/* Map pin SVG */}
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                <circle cx="12" cy="10" r="3"/>
-              </svg>
-              Get Directions to MS Electrical
+              <Button variant="outline" className="w-full gap-2 border-primary/30 text-primary hover:bg-primary/10 hover:text-primary hover:border-primary/60">
+                <MapPin className="w-4 h-4" />
+                Get Directions to MS Electrical
+              </Button>
             </a>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
 
         {/* Footer */}
-        <div style={{ textAlign: "center", marginTop: "2rem", fontSize: "0.85rem", color: "#6b7280" }}>
-          Made with <span style={{ color: "#ef4444" }}>❤️</span> by <span style={{ color: "#e5e7eb", fontWeight: 600 }}>Siraj</span>
-        </div>
+        <p className="text-center text-sm text-muted-foreground pb-4">
+          Made with <span className="text-destructive">❤️</span> by <span className="font-semibold text-foreground">Siraj</span>
+        </p>
 
       </div>
       <Analytics />
     </div>
   );
 }
-export default App;
