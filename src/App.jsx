@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 const FLAME = "🔥";
 const BOLT = "⚡";
@@ -204,6 +205,7 @@ function App() {
         </div>
 
       </div>
+      <Analytics />
     </div>
   );
 }
