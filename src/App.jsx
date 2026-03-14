@@ -401,13 +401,13 @@ export default function App() {
                   <Badge variant="default" className="text-[0.6rem] uppercase tracking-wider">Our Price</Badge>
                   <span className="text-sm text-muted-foreground">You Pay</span>
                 </div>
-                <span className="font-mono text-2xl font-bold text-primary">₹2,800</span>
+                <span className="font-mono text-2xl font-bold text-primary">₹3,499</span>
               </div>
 
               {/* Savings callout */}
               <div className="bg-primary/10 rounded-md px-3 py-2 flex justify-between items-center">
                 <span className="text-sm font-semibold text-primary">You Save</span>
-                <span className="font-mono text-sm font-bold text-primary">₹1,200 <span className="font-normal opacity-75">(30% off)</span></span>
+                <span className="font-mono text-sm font-bold text-primary">₹501 <span className="font-normal opacity-75">(~12.5% off)</span></span>
               </div>
             </div>
 
@@ -479,13 +479,13 @@ export default function App() {
                   <Badge variant="default" className="text-[0.6rem] uppercase tracking-wider">Our Price</Badge>
                   <span className="text-sm text-muted-foreground">You Pay</span>
                 </div>
-                <span className="font-mono text-2xl font-bold text-primary">₹2,790</span>
+                <span className="font-mono text-2xl font-bold text-primary">₹3,499</span>
               </div>
 
               {/* Savings callout */}
               <div className="bg-primary/10 rounded-md px-3 py-2 flex justify-between items-center">
                 <span className="text-sm font-semibold text-primary">You Save</span>
-                <span className="font-mono text-sm font-bold text-primary">₹800 <span className="font-normal opacity-75">(~22% off)</span></span>
+                <span className="font-mono text-sm font-bold text-primary">₹91 <span className="font-normal opacity-75">(~2.5% off)</span></span>
               </div>
             </div>
 
