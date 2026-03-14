@@ -205,93 +205,96 @@ export default function App() {
         </div>
 
         {/* LPG + Induction Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        { /* Section intentionally commented out so users see the deals quicker */ }
+        {false && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-          {/* LPG Card */}
-          <Card className="border-orange-400/50 bg-card relative overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none select-none">
-              <img src="/lpg.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center opacity-90" />
-              <div className="absolute inset-0 bg-black/60" />
-            </div>
-            <CardHeader className="pb-3 relative">
-              <CardTitle className="flex items-center gap-2 text-orange-300 text-sm uppercase tracking-widest font-bold">
-                <Flame className="w-4 h-4" />
-                LPG Gas
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="relative">
-              <SliderRow
-                label="Cylinder Price" value={cylinderPrice}
-                min={800} max={2000} step={50}
-                onChange={setCylinderPrice} unit="₹"
-                accentClass="text-orange-300" lightText
-              />
-              <SliderRow
-                label="Cylinder Lasts" value={cylinderDays}
-                min={10} max={40} step={1}
-                onChange={setCylinderDays} unit=" days"
-                accentClass="text-orange-300" lightText
-              />
-              <Separator className="my-3 bg-white/20" />
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/65">Per day</span>
-                  <span className="font-mono font-semibold text-orange-300">₹{results.lpgPerDay.toFixed(0)}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/65">Per month</span>
-                  <span className="font-mono font-bold text-lg text-orange-300">₹{results.lpgPerMonth.toFixed(0)}</span>
-                </div>
+            {/* LPG Card */}
+            <Card className="border-orange-400/50 bg-card relative overflow-hidden">
+              <div className="absolute inset-0 pointer-events-none select-none">
+                <img src="/lpg.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center opacity-90" />
+                <div className="absolute inset-0 bg-black/60" />
               </div>
-            </CardContent>
-          </Card>
+              <CardHeader className="pb-3 relative">
+                <CardTitle className="flex items-center gap-2 text-orange-300 text-sm uppercase tracking-widest font-bold">
+                  <Flame className="w-4 h-4" />
+                  LPG Gas
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="relative">
+                <SliderRow
+                  label="Cylinder Price" value={cylinderPrice}
+                  min={800} max={2000} step={50}
+                  onChange={setCylinderPrice} unit="₹"
+                  accentClass="text-orange-300" lightText
+                />
+                <SliderRow
+                  label="Cylinder Lasts" value={cylinderDays}
+                  min={10} max={40} step={1}
+                  onChange={setCylinderDays} unit=" days"
+                  accentClass="text-orange-300" lightText
+                />
+                <Separator className="my-3 bg-white/20" />
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-white/65">Per day</span>
+                    <span className="font-mono font-semibold text-orange-300">₹{results.lpgPerDay.toFixed(0)}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-white/65">Per month</span>
+                    <span className="font-mono font-bold text-lg text-orange-300">₹{results.lpgPerMonth.toFixed(0)}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Induction Card */}
-          <Card className="border-blue-400/50 bg-card relative overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none select-none">
-              <img src="/induction.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center opacity-90" />
-              <div className="absolute inset-0 bg-black/60" />
-            </div>
-            <CardHeader className="pb-3 relative">
-              <CardTitle className="flex items-center gap-2 text-blue-300 text-sm uppercase tracking-widest font-bold">
-                <Zap className="w-4 h-4" />
-                Induction
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="relative">
-              <SliderRow
-                label="Wattage" value={wattage}
-                min={1000} max={3000} step={100}
-                onChange={setWattage} unit="W"
-                accentClass="text-blue-300" lightText
-              />
-              <SliderRow
-                label="Daily Usage" value={hoursPerDay}
-                min={0.5} max={5} step={0.5}
-                onChange={setHoursPerDay} unit=" hrs"
-                accentClass="text-blue-300" lightText
-              />
-              <SliderRow
-                label="Electricity Rate" value={ratePerUnit}
-                min={3} max={20} step={0.5}
-                onChange={setRatePerUnit} unit=" ₹/unit"
-                accentClass="text-blue-300" lightText
-              />
-              <Separator className="my-3 bg-white/20" />
-              <div className="space-y-1.5">
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/65">Units/month</span>
-                  <span className="font-mono font-semibold text-blue-300">{results.unitsPerMonth.toFixed(1)} kWh</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-white/65">Per month</span>
-                  <span className="font-mono font-bold text-lg text-blue-300">₹{results.inductionPerMonth.toFixed(0)}</span>
-                </div>
+            {/* Induction Card */}
+            <Card className="border-blue-400/50 bg-card relative overflow-hidden">
+              <div className="absolute inset-0 pointer-events-none select-none">
+                <img src="/induction.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center opacity-90" />
+                <div className="absolute inset-0 bg-black/60" />
               </div>
-            </CardContent>
-          </Card>
-        </div>
-
+              <CardHeader className="pb-3 relative">
+                <CardTitle className="flex items-center gap-2 text-blue-300 text-sm uppercase tracking-widest font-bold">
+                  <Zap className="w-4 h-4" />
+                  Induction
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="relative">
+                <SliderRow
+                  label="Wattage" value={wattage}
+                  min={1000} max={3000} step={100}
+                  onChange={setWattage} unit="W"
+                  accentClass="text-blue-300" lightText
+                />
+                <SliderRow
+                  label="Daily Usage" value={hoursPerDay}
+                  min={0.5} max={5} step={0.5}
+                  onChange={setHoursPerDay} unit=" hrs"
+                  accentClass="text-blue-300" lightText
+                />
+                <SliderRow
+                  label="Electricity Rate" value={ratePerUnit}
+                  min={3} max={20} step={0.5}
+                  onChange={setRatePerUnit} unit=" ₹/unit"
+                  accentClass="text-blue-300" lightText
+                />
+                <Separator className="my-3 bg-white/20" />
+                <div className="space-y-1.5">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-white/65">Units/month</span>
+                    <span className="font-mono font-semibold text-blue-300">{results.unitsPerMonth.toFixed(1)} kWh</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-white/65">Per month</span>
+                    <span className="font-mono font-bold text-lg text-blue-300">₹{results.inductionPerMonth.toFixed(0)}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+            
         {/* Verdict Banner */}
         <Card className={winner === "induction" ? "border-primary/40" : winner === "lpg" ? "border-chart-2/40" : "border-border"}>
           <CardContent className="pt-5">
