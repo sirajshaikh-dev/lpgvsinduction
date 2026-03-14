@@ -167,11 +167,11 @@ export default function App() {
 
         {/* Header */}
         <div className="text-center mb-8 space-y-2">
-          <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">India Kitchen Cost Planner</p>
+          {/* <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">India Kitchen Cost Planner</p> */}
           <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
-            <span className="text-chart-2">LPG</span>
+            {/* <span className="text-chart-2">LPG</span>
             <span className="text-muted-foreground mx-2">vs</span>
-            <span className="text-primary">Induction</span>
+            <span className="text-primary">Induction</span> */}
           </h1>
           {/* ── Scroll CTA ── */}
         <button
@@ -195,7 +195,7 @@ export default function App() {
             </svg>
           </div>
         </button>
-          <p className="text-sm text-muted-foreground">Adjust values to match your usage and see which saves more</p>
+          {/* <p className="text-sm text-muted-foreground">Adjust values to match your usage and see which saves more</p> */}
           {isChanged && (
             <Button variant="outline" size="sm" onClick={handleReset} className="mt-2 gap-1.5">
               <RotateCcw className="w-3.5 h-3.5" />
