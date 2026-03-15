@@ -166,191 +166,19 @@ export default function App() {
       <div className="max-w-2xl mx-auto space-y-4">
 
         {/* Header */}
-        <div className="text-center mb-8 space-y-2">
-          {/* <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">India Kitchen Cost Planner</p> */}
-          <h1 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
-            {/* <span className="text-chart-2">LPG</span>
-            <span className="text-muted-foreground mx-2">vs</span>
-            <span className="text-primary">Induction</span> */}
-          </h1>
-          {/* ── Scroll CTA ── */}
-        <button
-          onClick={() => document.getElementById("exclusive-deal").scrollIntoView({ behavior: "smooth", block: "start" })}
-          className="w-full flex flex-col items-center gap-1 py-2 group cursor-pointer bg-transparent border-0 outline-none"
-          aria-label="Scroll to exclusive deals"
-        >
-          <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground group-hover:text-primary transition-colors duration-300">
-            Exclusive Deals Below
-          </span>
-          <div className="flex flex-col items-center" style={{ animation: "scrollBounce 1.6s ease-in-out infinite" }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-              className="text-primary opacity-90">
-              <path d="M12 5v14M5 12l7 7 7-7"/>
-            </svg>
-          </div>
-          <div className="flex flex-col items-center -mt-2 opacity-50" style={{ animation: "scrollBounce 1.6s ease-in-out infinite 0.2s" }}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
-              className="text-primary">
-              <path d="M5 9l7 7 7-7"/>
-            </svg>
-          </div>
-        </button>
-          {/* <p className="text-sm text-muted-foreground">Adjust values to match your usage and see which saves more</p> */}
-          {isChanged && (
-            <Button variant="outline" size="sm" onClick={handleReset} className="mt-2 gap-1.5">
-              <RotateCcw className="w-3.5 h-3.5" />
-              Reset to defaults
-            </Button>
-          )}
-        </div>
+        
 
         {/* LPG + Induction Cards */}
         { /* Section intentionally commented out so users see the deals quicker */ }
-        {false && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        
 
-            {/* LPG Card */}
-            <Card className="border-orange-400/50 bg-card relative overflow-hidden">
-              <div className="absolute inset-0 pointer-events-none select-none">
-                <img src="/lpg.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center opacity-90" />
-                <div className="absolute inset-0 bg-black/60" />
-              </div>
-              <CardHeader className="pb-3 relative">
-                <CardTitle className="flex items-center gap-2 text-orange-300 text-sm uppercase tracking-widest font-bold">
-                  <Flame className="w-4 h-4" />
-                  LPG Gas
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="relative">
-                <SliderRow
-                  label="Cylinder Price" value={cylinderPrice}
-                  min={800} max={2000} step={50}
-                  onChange={setCylinderPrice} unit="₹"
-                  accentClass="text-orange-300" lightText
-                />
-                <SliderRow
-                  label="Cylinder Lasts" value={cylinderDays}
-                  min={10} max={40} step={1}
-                  onChange={setCylinderDays} unit=" days"
-                  accentClass="text-orange-300" lightText
-                />
-                <Separator className="my-3 bg-white/20" />
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/65">Per day</span>
-                    <span className="font-mono font-semibold text-orange-300">₹{results.lpgPerDay.toFixed(0)}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/65">Per month</span>
-                    <span className="font-mono font-bold text-lg text-orange-300">₹{results.lpgPerMonth.toFixed(0)}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Induction Card */}
-            <Card className="border-blue-400/50 bg-card relative overflow-hidden">
-              <div className="absolute inset-0 pointer-events-none select-none">
-                <img src="/induction.png" alt="" className="absolute inset-0 h-full w-full object-cover object-center opacity-90" />
-                <div className="absolute inset-0 bg-black/60" />
-              </div>
-              <CardHeader className="pb-3 relative">
-                <CardTitle className="flex items-center gap-2 text-blue-300 text-sm uppercase tracking-widest font-bold">
-                  <Zap className="w-4 h-4" />
-                  Induction
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="relative">
-                <SliderRow
-                  label="Wattage" value={wattage}
-                  min={1000} max={3000} step={100}
-                  onChange={setWattage} unit="W"
-                  accentClass="text-blue-300" lightText
-                />
-                <SliderRow
-                  label="Daily Usage" value={hoursPerDay}
-                  min={0.5} max={5} step={0.5}
-                  onChange={setHoursPerDay} unit=" hrs"
-                  accentClass="text-blue-300" lightText
-                />
-                <SliderRow
-                  label="Electricity Rate" value={ratePerUnit}
-                  min={3} max={20} step={0.5}
-                  onChange={setRatePerUnit} unit=" ₹/unit"
-                  accentClass="text-blue-300" lightText
-                />
-                <Separator className="my-3 bg-white/20" />
-                <div className="space-y-1.5">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/65">Units/month</span>
-                    <span className="font-mono font-semibold text-blue-300">{results.unitsPerMonth.toFixed(1)} kWh</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/65">Per month</span>
-                    <span className="font-mono font-bold text-lg text-blue-300">₹{results.inductionPerMonth.toFixed(0)}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+           
             
         {/* Verdict Banner */}
-        <Card className={winner === "induction" ? "border-primary/40" : winner === "lpg" ? "border-chart-2/40" : "border-border"}>
-          <CardContent className="pt-5">
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div>
-                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Monthly Saving</p>
-                <p className={`font-mono text-4xl font-bold tracking-tight ${winner === "induction" ? "text-primary" : winner === "lpg" ? "text-chart-2" : "text-muted-foreground"}`}>
-                  ₹{Math.abs(results.saving).toFixed(0)}
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-1">Verdict</p>
-                <p className="font-semibold text-base">
-                  {winner === "equal"
-                    ? "Both cost the same"
-                    : winner === "induction"
-                    ? <span className="flex items-center gap-1.5 justify-end"><Zap className="w-4 h-4 text-primary" /><span className="text-primary">Induction</span> is cheaper</span>
-                    : <span className="flex items-center gap-1.5 justify-end"><Flame className="w-4 h-4 text-chart-2" /><span className="text-chart-2">LPG</span> is cheaper</span>
-                  }
-                </p>
-                {winner !== "equal" && (
-                  <p className="text-xs text-muted-foreground">saves {pct.toFixed(0)}% per month</p>
-                )}
-              </div>
-            </div>
-
-            {/* Bar comparison */}
-            <div className="mt-4">
-              <div className="flex h-2 rounded-full overflow-hidden gap-0.5">
-                <div
-                  className="bg-chart-2 rounded-l-full transition-all duration-500"
-                  style={{ flex: results.lpgPerMonth }}
-                />
-                <div
-                  className="bg-primary rounded-r-full transition-all duration-500"
-                  style={{ flex: results.inductionPerMonth }}
-                />
-              </div>
-              <div className="flex justify-between mt-1.5">
-                <span className="text-[0.68rem] text-chart-2 flex items-center gap-1"><Flame className="w-3 h-3" /> LPG ₹{results.lpgPerMonth.toFixed(0)}</span>
-                <span className="text-[0.68rem] text-primary flex items-center gap-1">Induction ₹{results.inductionPerMonth.toFixed(0)} <Zap className="w-3 h-3" /></span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+       
 
         {/* Note */}
-        <Card className="border-border bg-muted/40">
-          <CardContent className="pt-5 text-sm text-muted-foreground leading-relaxed">
-            <span className="font-semibold text-foreground">💡 Note:</span> Induction is ~84% energy efficient vs LPG's ~40%.
-            So even at similar rupee cost, induction delivers more usable heat.
-            At <span className="font-semibold text-foreground">2200W for 1.5 hrs/day @ ₹10/unit</span> →{" "}
-            <span className="font-semibold text-primary">₹{results.inductionPerMonth.toFixed(0)}/month</span> vs LPG's{" "}
-            <span className="font-semibold text-chart-2">₹{results.lpgPerMonth.toFixed(0)}/month</span>.
-          </CardContent>
-        </Card>
+        
 
         {/* ── Product Sell Section ── */}
         <Card id="exclusive-deal" className="border-primary/30 overflow-hidden">
