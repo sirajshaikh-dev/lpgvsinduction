@@ -1,4 +1,3 @@
-import { useState, useMemo } from "react";
 import { Analytics } from "@vercel/analytics/react";
 import { Flame, Zap, RotateCcw, MapPin, ExternalLink, Truck, Package } from "lucide-react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
@@ -9,101 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ImageSlider } from "@/components/ui/image-slider";
+import { PRODUCTS } from "./lib/product";
 
-const RR_IMAGES = [
-  "/rr-signature-rr-2200-rr-signature-original-imahg3myf3ypfgp9.webp",
-  "/rr-signature-rr-2200-rr-signature-original-imahg3myevprjjzz.webp",
-  "/rr-signature-rr-2200-rr-signature-original-imahg3myyddvgfu2.webp",
-];
-
-const USHA_IMAGES = [
-  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_0_lExfr9a05.png?updatedAt=1764768660479",
-  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_1_LUq9s-7F3.png?updatedAt=1772174661297",
-  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_2_2T1YPdMWS.png?updatedAt=1772174662540",
-  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_3_iNaLfO3Fi.png?updatedAt=1764768835343",
-  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_4_jwsAs7oZ9.png?updatedAt=1764768806125",
-  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_5_zqdSoUpNt6.png?updatedAt=1764768820784",
-  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_6_MLgXGJuVo.png?updatedAt=1764768787918",
-  "https://media.tatacroma.com/Croma%20Assets/Small%20Appliances/Stoves%20Cooktops/Images/319843_7_Uwx3zUujd.png?updatedAt=1764768714391",
-];
-
-const PRODUCTS = [
-  {
-    id: "usha-2200",
-    title: "Usha 2200W Infrared Cooktop",
-    subtitle: "Touch Panel",
-    images: USHA_IMAGES,
-    flipkartUrl:
-      "https://www.flipkart.com/usha-2200-w-infrared-cooktop-touch-panel/p/itm4e03ada5a3565",
-    mrp: 3590,
-    ourPrice: 3499,
-    whatsappText: "Hi, I want to order the Usha 2200W Induction Cooktop",
-    cardClass: "border-secondary/30",
-    badgeVariant: "secondary",
-  },
-  {
-    id: "rr-2200",
-    title: "RR Signature 2200W Infrared Cooktop",
-    subtitle: "Touch Panel",
-    images: RR_IMAGES,
-    flipkartUrl:
-      "https://www.flipkart.com/rr-signature-2200-w-infrared-cooktop-touch-panel/p/itm1ab6b8d449f31",
-    mrp: 4000,
-    ourPrice: 3499,
-    whatsappText: "Hi, I want to order the RR Signature 2200W Induction Cooktop",
-    cardClass: "border-primary/30",
-    badgeVariant: "accent",
-  },
-  // {
-  //   id: "usha-2000",
-  //   title: "USHA 2000 W Induction Cooktop Push Button",
-  //   subtitle: "Black",
-  //   images: [
-  //     "https://via.placeholder.com/640x480?text=Usha+2000W+Induction+Cooktop",
-  //   ],
-  //   flipkartUrl: "https://www.flipkart.com/search?q=usha+2000w+induction+cooktop",
-  //   mrp: 3499,
-  //   ourPrice: 2949,
-  //   whatsappText: "Hi, I want to order the USHA 2000W Induction Cooktop",
-  //   cardClass: "border-secondary/30",
-  //   badgeVariant: "secondary",
-  // },
-  // {
-  //   id: "usha-1600",
-  //   title: "USHA 1600 W Induction Cooktop Push Button",
-  //   subtitle: "Black",
-  //   images: [
-  //     "https://via.placeholder.com/640x480?text=Usha+1600W+Induction+Cooktop",
-  //   ],
-  //   flipkartUrl: "https://www.flipkart.com/search?q=usha+1600w+induction+cooktop",
-  //   mrp: 2999,
-  //   ourPrice: 2490,
-  //   whatsappText: "Hi, I want to order the USHA 1600W Induction Cooktop",
-  //   cardClass: "border-secondary/30",
-  //   badgeVariant: "secondary",
-  // },
-  // {
-  //   id: "usha-1360",
-  //   title: "USHA 1360 W Induction Cooktop Push Button",
-  //   subtitle: "Black",
-  //   images: [
-  //     "https://via.placeholder.com/640x480?text=Usha+1360W+Induction+Cooktop",
-  //   ],
-  //   flipkartUrl: "https://www.flipkart.com/search?q=usha+1360w+induction+cooktop",
-  //   mrp: 2999,
-  //   ourPrice: 2440,
-  //   whatsappText: "Hi, I want to order the USHA 1360W Induction Cooktop",
-  //   cardClass: "border-secondary/30",
-  //   badgeVariant: "secondary",
-  // },
-  
-];
 
 // ── Proper Vite fix: import images as assets so bundler resolves them correctly
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIconUrl from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import NavbarPage from "../app/navbar-component-01/page";
+import { CardFooter } from "./components/ui/card";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -164,23 +77,14 @@ function DeliveryCards() {
   );
 }
 
-const DEFAULTS = {
-  cylinderPrice: 1300,
-  cylinderDays: 20,
-  wattage: 2200,
-  hoursPerDay: 2,
-  ratePerUnit: 7,
-};
-
-
 
 export default function App() {
 
 
   return (
-    <div className="min-h-screen bg-background text-foreground  py-10">
+    <div className="min-h-screen text-foreground py-8">
       <NavbarPage/>
-      <div className="max-w-2xl mx-auto space-y-4">
+      <div className="max-w-xl mx-auto space-x-10 space-y-4">
 
         {/* Header */}
         
@@ -203,87 +107,46 @@ export default function App() {
           const pctOff = product.mrp ? Math.round((saving / product.mrp) * 100) : 0;
 
           return (
-            <Card key={product.id} className={`${product.cardClass} overflow-hidden`}>
-              {/* Badge strip */}
-              <div className="bg-primary/10 border-b border-primary/20 px-5 py-2 flex items-center gap-2">
-                <Badge variant={product.badgeVariant} className="text-[0.6rem] tracking-widest uppercase">✦ Exclusive Deal</Badge>
-                <span className="text-[0.65rem] text-muted-foreground">Direct from seller</span>
+            <div key={product.id} className='relative max-w-7xl rounded-xl  px-10 py-6 shadow-lg'>
+              <div className='flex h-80 items-center justify-center'>
+                <ImageSlider images={product.images} />
               </div>
-
-              <CardHeader className="pb-2">
-                <CardDescription className="text-xs uppercase tracking-widest">Featured Product</CardDescription>
-                <CardTitle className="text-lg leading-snug">
-                  {product.title}
-                  {product.subtitle ? (
-                    <span className="font-normal text-muted-foreground text-sm"> — {product.subtitle}</span>
-                  ) : null}
-                </CardTitle>
-              </CardHeader>
-
-              <CardContent className="space-y-4">
-                <ImageSlider images={product.images} className="border border-border" />
-
-                {/* Price comparison */}
-                <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
-                  <p className="text-[0.65rem] uppercase tracking-widest text-muted-foreground">Price Comparison</p>
-
-                  {/* Flipkart row */}
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <a
-                        href={product.flipkartUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="no-underline"
-                      >
-                        <Badge
-                          variant="secondary"
-                          className="text-[0.6rem] uppercase tracking-wider cursor-pointer hover:opacity-80 transition-opacity gap-1"
-                        >
-                          Flipkart <ExternalLink className="w-2.5 h-2.5" />
-                        </Badge>
-                      </a>
-                      <span className="text-sm text-muted-foreground">MRP</span>
-                    </div>
-                    <span className="font-mono text-muted-foreground line-through decoration-destructive">₹{product.mrp.toLocaleString()}</span>
+              <Card className='border-none'>
+                <CardHeader className="pb-1">
+                  <CardTitle>{product.title}</CardTitle>
+                  <CardDescription className='flex items-center gap-2 pb-1'>
+                    <Badge variant='outline' className='rounded-sm'>
+                      {product.subtitle}
+                    </Badge>
+                    <Badge variant='outline' className='rounded-sm'>
+                      {pctOff}% off
+                    </Badge>
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className='pb-2'>
+                  <p>
+                    Exclusive deal direct from seller. Save ₹{saving} compared to MRP.
+                  </p>
+                </CardContent>
+                <CardFooter className='justify-between gap-3 max-sm:flex-col max-sm:items-stretch '>
+                  <div className='flex flex-col'>
+                    <span className='text-sm font-medium uppercase'>Price</span>
+                    <span className='text-xl font-semibold'>₹{product.ourPrice}</span>
                   </div>
-
-                  <Separator />
-
-                  {/* Our price row */}
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="default" className="text-[0.6rem] uppercase tracking-wider">Our Price</Badge>
-                      <span className="text-sm text-muted-foreground">You Pay</span>
-                    </div>
-                    <span className="font-mono text-2xl font-bold text-primary">₹{product.ourPrice.toLocaleString()}</span>
-                  </div>
-
-                  {/* Savings callout */}
-                  <div className="bg-primary/10 rounded-md px-3 py-2 flex justify-between items-center">
-                    <span className="text-sm font-semibold text-primary">You Save</span>
-                    <span className="font-mono text-sm font-bold text-primary">
-                      ₹{saving.toLocaleString()} <span className="font-normal opacity-75">(~{pctOff}% off)</span>
-                    </span>
-                  </div>
-                </div>
-
-                <DeliveryCards />
-
-                {/* WhatsApp CTA */}
-                <a
-                  href={`https://wa.me/919898194074?text=${encodeURIComponent(product.whatsappText)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="no-underline block"
-                >
-                  <Button className="w-full h-11 text-base gap-2.5 bg-[#22c55e] hover:bg-[#16a34a] text-white border-0 shadow-lg shadow-green-500/20">
-                    {WA_ICON}
-                    Order on WhatsApp
-                  </Button>
-                </a>
-              </CardContent>
-            </Card>
+                  <a
+                    href={`https://wa.me/919898194074?text=${encodeURIComponent(product.whatsappText)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="no-underline"
+                  >
+                    <Button size='lg' className="bg-[#22c55e] hover:bg-[#16a34a] text-white border-0 shadow-lg shadow-green-500/20 gap-2.5">
+                      {WA_ICON}
+                      Order on WhatsApp
+                    </Button>
+                  </a>
+                </CardFooter>
+              </Card>
+            </div>
           );
         })}
 
