@@ -103,6 +103,7 @@ const PRODUCTS = [
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIconUrl from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import NavbarPage from "../app/navbar-component-01/page";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -171,70 +172,14 @@ const DEFAULTS = {
   ratePerUnit: 7,
 };
 
-function SliderRow({ label, value, min, max, step, onChange, unit, accentClass, lightText = false }) {
-  const mutedClass = lightText ? "text-white/60" : "text-muted-foreground";
-  return (
-    <div className="mb-5">
-      <div className="flex justify-between items-center mb-2">
-        <span className={`text-xs uppercase tracking-widest ${mutedClass}`}>{label}</span>
-        <span className={`font-mono text-sm font-semibold ${accentClass}`}>
-          {typeof value === "number" && value % 1 !== 0 ? value.toFixed(1) : value}{unit}
-        </span>
-      </div>
-      <Slider
-        min={min}
-        max={max}
-        step={step}
-        value={[value]}
-        onValueChange={([v]) => onChange(v)}
-      />
-      <div className="flex justify-between mt-1">
-        <span className={`text-[0.65rem] ${mutedClass}`}>{min}{unit}</span>
-        <span className={`text-[0.65rem] ${mutedClass}`}>{max}{unit}</span>
-      </div>
-    </div>
-  );
-}
+
 
 export default function App() {
-  const [cylinderPrice, setCylinderPrice] = useState(DEFAULTS.cylinderPrice);
-  const [cylinderDays, setCylinderDays] = useState(DEFAULTS.cylinderDays);
-  const [wattage, setWattage] = useState(DEFAULTS.wattage);
-  const [hoursPerDay, setHoursPerDay] = useState(DEFAULTS.hoursPerDay);
-  const [ratePerUnit, setRatePerUnit] = useState(DEFAULTS.ratePerUnit);
 
-  const isChanged =
-    cylinderPrice !== DEFAULTS.cylinderPrice ||
-    cylinderDays !== DEFAULTS.cylinderDays ||
-    wattage !== DEFAULTS.wattage ||
-    hoursPerDay !== DEFAULTS.hoursPerDay ||
-    ratePerUnit !== DEFAULTS.ratePerUnit;
-
-  const handleReset = () => {
-    setCylinderPrice(DEFAULTS.cylinderPrice);
-    setCylinderDays(DEFAULTS.cylinderDays);
-    setWattage(DEFAULTS.wattage);
-    setHoursPerDay(DEFAULTS.hoursPerDay);
-    setRatePerUnit(DEFAULTS.ratePerUnit);
-  };
-
-  const results = useMemo(() => {
-    const lpgPerDay = cylinderPrice / cylinderDays;
-    const lpgPerMonth = lpgPerDay * 30;
-    const unitsPerDay = (wattage / 1000) * hoursPerDay;
-    const inductionPerDay = unitsPerDay * ratePerUnit;
-    const inductionPerMonth = inductionPerDay * 30;
-    const unitsPerMonth = unitsPerDay * 30;
-    const saving = lpgPerMonth - inductionPerMonth;
-    const cheaperOption = saving > 0 ? "induction" : saving < 0 ? "lpg" : "equal";
-    return { lpgPerDay, lpgPerMonth, inductionPerDay, inductionPerMonth, unitsPerDay, unitsPerMonth, saving, cheaperOption };
-  }, [cylinderPrice, cylinderDays, wattage, hoursPerDay, ratePerUnit]);
-
-  const pct = Math.min(100, Math.abs(results.saving) / Math.max(results.lpgPerMonth, results.inductionPerMonth) * 100);
-  const winner = results.cheaperOption;
 
   return (
-    <div className="min-h-screen bg-background text-foreground px-4 py-10">
+    <div className="min-h-screen bg-background text-foreground  py-10">
+      <NavbarPage/>
       <div className="max-w-2xl mx-auto space-y-4">
 
         {/* Header */}
