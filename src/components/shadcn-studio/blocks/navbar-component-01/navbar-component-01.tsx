@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 import Logo from '@/components/shadcn-studio/logo'
 
@@ -33,9 +34,19 @@ const Navbar = ({ navigationData }: { navigationData: NavigationItem }) => {
           <a href='#' className='hover:text-primary max-md:hidden'>
             About Us
           </a>
-          <a href='#' className='hover:text-primary max-md:hidden'>
-            Contacts
-          </a>
+          <Popover>
+            <PopoverTrigger asChild>
+              <a className='hover:text-primary max-md:hidden cursor-pointer'>
+                Contacts
+              </a>
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className='space-y-2'>
+                <p><strong>Contact:</strong> +91 9898194074</p>
+                <p><strong>Address:</strong> Shop no.03, Sai shakti apartment, sai mohan gate2, Bhestan.</p>
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className='flex items-center gap-6'>
@@ -54,7 +65,21 @@ const Navbar = ({ navigationData }: { navigationData: NavigationItem }) => {
               <DropdownMenuGroup>
                 {navigationData.map((item, index) => (
                   <DropdownMenuItem key={index}>
-                    <a href={item.href}>{item.title}</a>
+                    {item.title === 'Contacts' ? (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <span className='cursor-pointer'>{item.title}</span>
+                        </PopoverTrigger>
+                        <PopoverContent>
+                          <div className='space-y-2'>
+                            <p><strong>Contact:</strong> +91 9898194074</p>
+                            <p><strong>Address:</strong> Shop no.03, Sai shakti apartment, sai mohan gate2, Bhestan.</p>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    ) : (
+                      <a href={item.href}>{item.title}</a>
+                    )}
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuGroup>
